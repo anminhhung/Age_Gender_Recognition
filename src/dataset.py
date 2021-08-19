@@ -21,9 +21,15 @@ class MyData(Dataset):
             gender = ((image_name.split(".")[0]).split("_")[2]).split("G")[-1]
             image_path = os.path.join(path_dir, image_name)
             
-            list_age.append(int(age))
+            list_age.append(float(age))
             list_gender.append(int(gender))
             list_path.append(image_path)
+        
+        # max age
+        self.max_age = max(list_age)
+
+        # normalize age
+        list_age = [age / self.max_age for age in list_age]
 
         # #Splitting the data into train and validation set
         X_train, X_test, y_age_train, y_age_test, y_gender_train, y_gender_test = \
