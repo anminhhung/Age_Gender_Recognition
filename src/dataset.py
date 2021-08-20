@@ -5,8 +5,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from torchvision import transforms
 
-class MyData(Dataset):
-    def __init__(self, path_dir, test_ratio=0.2, train=True, transform=None):
+class AgeGenderData(Dataset):
+    def __init__(self, path_dir, train_val_ratio=0.2, train=True, transform=None):
         """
             Input:
                 path_dir: train folder
@@ -33,7 +33,7 @@ class MyData(Dataset):
 
         # #Splitting the data into train and validation set
         X_train, X_test, y_age_train, y_age_test, y_gender_train, y_gender_test = \
-        train_test_split(list_path, list_age, list_gender, test_size=test_ratio)
+            train_test_split(list_path, list_age, list_gender, test_size=train_val_ratio)
         
         if train:
             self.X = X_train
