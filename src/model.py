@@ -4,7 +4,7 @@ import pytorch_lightning as pl
 from torch import nn
 
 class AgeGenderModel(pl.LightningModule):
-    def __init__(self):
+    def __init__(self, cfg):
         super().__init__()
         self.feature_extractor = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=6, kernel_size=5, stride=1, padding=1),
@@ -15,7 +15,8 @@ class AgeGenderModel(pl.LightningModule):
 
         self.fc_age = nn.Linear(73926, 1)  #For age class
         self.fc_gender = nn.Linear(73926, 1)    #For gender class
-
+        
+        self.cfg = cfg
         self.criterion_binary= nn.BCELoss()
         self.criterion_regression = nn.MSELoss()
         
@@ -80,6 +81,6 @@ class AgeGenderModel(pl.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        optimizer = torch.optim.SGD(self.parameters(), lr=0.001, momentum=0.9)
+        optimizer = torch.optim.SGD(self.parameters(), lr=float(self.cfg["model"]["lr"]), momentum=0.9)
 
         return optimizer

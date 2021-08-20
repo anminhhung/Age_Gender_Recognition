@@ -7,8 +7,9 @@ from src.model import AgeGenderModel
 
 def parse_args():
     parser = argparse.ArgumentParser(description='List the content')
-    parser.add_argument("--image", require=True, help='path of image')
-  
+    parser.add_argument("--image", help='path of image')
+    parser.add_argument("--cfg_path", default="configs/config.ini", help='path of config file')
+
     return parser.parse_args()
 
 def predict(image, loaded_model, max_age, gender_threshold=0.5):
@@ -25,16 +26,16 @@ def predict(image, loaded_model, max_age, gender_threshold=0.5):
 
 if __name__ == "__main__":
     args = parse_args()
-    cfg = init_config()
+    cfg = init_config(args.cfg_path)
 
     # load model
-    age_gender_model = AgeGenderModel()
-    age_gender_model = loaded_model.load_from_checkpoint(cfg["inference"]["checkpoint_path"])
+    age_gender_model = AgeGenderModel(cfg)
+    age_gender_model = age_gender_model.load_from_checkpoint(cfg["inference"]["checkpoint_path"])
 
     # predict
     image_path = args.image
     image = cv2.imread(image_path)
-    pred_age, pred_gender = predict(image, loaded_model, \
-                    cfg["dataset"]["max_age"], cfg["inference"]["gender_threshold"])
+    pred_age, pred_gender = predict(image, age_gender_model, \
+                    float(cfg["dataset"]["max_age"]), float(cfg["inference"]["gender_threshold"]))
 
     print("pred_age: {}, pred_gender: {}".format(pred_age, pred_gender))
